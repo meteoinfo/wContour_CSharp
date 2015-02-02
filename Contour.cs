@@ -467,10 +467,10 @@ namespace wContour
 
             //---- Add a small value to aviod the contour point as same as data point
             double dShift;
-            dShift = getAbsMinValue(S0) * 0.00001;
+            dShift = getAbsMinValue(contour) * 0.0000001;
             //dShift = contour[0] * 0.0000001;
-            //if (dShift == 0)
-            //    dShift = 0.0000001;
+            if (dShift == 0)
+                dShift = 0.0000001;
             for (i = 0; i < m; i++)
             {
                 for (j = 0; j < n; j++)
@@ -998,12 +998,14 @@ namespace wContour
             List<PointD> newPList = new List<PointD>();
             double aValue;
             string aType;
+            bool isClose;
 
             for (i = 0; i < aLineList.Count; i++)
             {
                 aline = aLineList[i];
                 aValue = aline.Value;
                 aType = aline.Type;
+                isClose = aType == "Close";
                 newPList = new List<PointD>(aline.PointList);
                 if (newPList.Count <= 1)
                     continue;
@@ -1030,7 +1032,7 @@ namespace wContour
                     bP.Y = (cP.Y - aP.Y) / 2 + aP.Y;
                     newPList.Insert(1, bP);
                 }
-                newPList = BSplineScanning(newPList, step);
+                newPList = BSplineScanning(newPList, isClose, step);
                 aline.PointList = newPList;
                 newLineList.Add(aline);
             }
@@ -7690,16 +7692,27 @@ namespace wContour
         #region Smoothing Methods
         private static List<PointD> BSplineScanning(List<PointD> pointList)
         {
-            return BSplineScanning(pointList, 0.05f);
+            bool isClose = false;
+            int n = pointList.Count;
+            if (DoubleEquals(pointList[0].X, pointList[n - 1].X) && DoubleEquals(pointList[0].Y, pointList[n - 1].Y))
+                isClose = true;
+
+            return BSplineScanning(pointList, isClose, 0.05f);
+        }
+
+        private static List<PointD> BSplineScanning(List<PointD> pointList, bool isClose)
+        {
+            return BSplineScanning(pointList, isClose, 0.05f);
         }
 
         /// <summary>
         /// B-Spline interpolation
         /// </summary>
         /// <param name="pointList">Point list</param>
+        /// <param name="isClose">Is closed or not</param>
         /// <param name="step">Scan step (0 - 1)</param>
         /// <returns>Interpolated points</returns>
-        private static List<PointD> BSplineScanning(List<PointD> pointList, float step)
+        private static List<PointD> BSplineScanning(List<PointD> pointList, bool isClose, float step)
         {
             Single t;
             int i;
@@ -7713,11 +7726,10 @@ namespace wContour
                 return null;
             }
 
-            bool isClose = false;
             aPoint = (PointD)pointList[0];
             PointD bPoint = (PointD)pointList[sum - 1];
             //if (aPoint.X == bPoint.X && aPoint.Y == bPoint.Y)
-            if (DoubleEquals(aPoint.X, bPoint.X) && DoubleEquals(aPoint.Y, bPoint.Y))
+            if (isClose)
             {
                 pointList.RemoveAt(0);
                 pointList.Add(pointList[0]);
@@ -7729,7 +7741,6 @@ namespace wContour
                 pointList.Add(pointList[6]);
                 //pointList.Add(pointList[7]);
                 //pointList.Add(pointList[8]);
-                isClose = true;
             }
 
             sum = pointList.Count;
@@ -8043,6 +8054,42 @@ namespace wContour
         }
 
         private static List<BorderPoint> InsertPoint2Border(List<BorderPoint> bPList, List<BorderPoint> aBorderList)
+        {
+            BorderPoint aBPoint, bP;
+            int i, j;
+            PointD p1, p2, p3;
+            //ArrayList aEPList = new ArrayList(), temEPList = new ArrayList(), dList = new ArrayList();
+            List<BorderPoint> BorderList = new List<BorderPoint>(aBorderList);
+
+            for (i = 0; i < bPList.Count; i++)
+            {
+                bP = bPList[i];
+                p3 = bP.Point;
+                aBPoint = BorderList[0];
+                p1 = aBPoint.Point;
+                for (j = 1; j < BorderList.Count; j++)
+                {
+                    aBPoint = BorderList[j];
+                    p2 = aBPoint.Point;                    
+                    if ((p3.X - p1.X) * (p3.X - p2.X) <= 0)
+                    {                       
+                        if ((p3.Y - p1.Y) * (p3.Y - p2.Y) <= 0)
+                        {
+                            if ((p3.X - p1.X) * (p2.Y - p1.Y) - (p2.X - p1.X) * (p3.Y - p1.Y) <= 0.001)
+                            {
+                                BorderList.Insert(j, bP);
+                                break;
+                            }
+                        }
+                    }
+                    p1 = p2;
+                }
+            }
+
+            return BorderList;
+        }
+
+        private static List<BorderPoint> InsertPoint2Border_old(List<BorderPoint> bPList, List<BorderPoint> aBorderList)
         {
             BorderPoint aBPoint, bP;
             int i, j;
@@ -8437,6 +8484,30 @@ namespace wContour
                         }
                         idx += 1;
                     }                    
+                }
+            }
+
+            return min;
+        }
+
+        private static double getAbsMinValue(double[] values)
+        {
+            double min = 0.0001, v;
+            int n, i;
+            n = values.Length;
+            int idx = 0;
+            for (i = 1; i < n; i++)
+            {
+                if (values[i] == 0.0)
+                    continue;
+
+                v = Math.Abs(values[i]);
+                if (idx == 0)
+                    min = v;
+                else
+                {
+                    if (min > v)
+                        min = v;
                 }
             }
 

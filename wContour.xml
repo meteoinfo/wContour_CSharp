@@ -458,11 +458,12 @@
             <param name="density">stream line density</param>
             <returns>streamlines</returns>
         </member>
-        <member name="M:wContour.Contour.BSplineScanning(System.Collections.Generic.List{wContour.PointD},System.Single)">
+        <member name="M:wContour.Contour.BSplineScanning(System.Collections.Generic.List{wContour.PointD},System.Boolean,System.Single)">
             <summary>
             B-Spline interpolation
             </summary>
             <param name="pointList">Point list</param>
+            <param name="isClose">Is closed or not</param>
             <param name="step">Scan step (0 - 1)</param>
             <returns>Interpolated points</returns>
         </member>
