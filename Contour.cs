@@ -1152,7 +1152,7 @@ namespace wContour
                             }
                             aPolygon.IsHighCenter = true;
                         }
-                        if (PList.Count > 0)
+                        if (PList.Count > 2)
                         {
                             aPolygon.IsBorder = true;
                             aPolygon.HighValue = aValue;
@@ -1226,7 +1226,7 @@ namespace wContour
                             }
                             aPolygon.IsHighCenter = true;
                         }
-                        if (PList.Count > 0)
+                        if (PList.Count > 2)
                         {
                             aPolygon.IsBorder = true;
                             aPolygon.HighValue = aValue;
@@ -3620,7 +3620,7 @@ namespace wContour
 
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 aPolygon = new Polygon();
                                 aPolygon.LowValue = aValue;
@@ -3716,7 +3716,7 @@ namespace wContour
 
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 aPolygon = new Polygon();
                                 aPolygon.LowValue = aValue;
@@ -3968,7 +3968,7 @@ namespace wContour
                 newPList.Add(newPList[0]);
                 aLine.PointList = new List<PointD>(newPList);
 
-                if (aLine.PointList.Count > 0)
+                if (aLine.PointList.Count > 2)
                 {
                     aPolygon.LowValue = aLine.Value;
                     aPolygon.HighValue = aLine.Value;
@@ -4140,7 +4140,7 @@ namespace wContour
 
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 aPolygon = new Polygon();
                                 aPolygon.IsBorder = true;
@@ -4248,7 +4248,7 @@ namespace wContour
 
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 aPolygon = new Polygon();
                                 aPolygon.IsBorder = true;
@@ -4287,7 +4287,7 @@ namespace wContour
             for (i = 0; i < aLineList.Count; i++)
             {
                 aLine = aLineList[i];
-                if (aLine.Type == "Close" && aLine.PointList.Count > 0)
+                if (aLine.Type == "Close" && aLine.PointList.Count > 2)
                 {
                     aPolygon = new Polygon();
                     aPolygon.IsBorder = false;
@@ -5878,7 +5878,7 @@ namespace wContour
                         //---- Return to start point, tracing finish
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 if (sameBorderIdx)
                                 {
@@ -6055,7 +6055,7 @@ namespace wContour
 
                         if (pIdx == i)
                         {
-                            if (aPList.Count > 0)
+                            if (aPList.Count > 2)
                             {
                                 if (sameBorderIdx)
                                 {
@@ -6168,14 +6168,14 @@ namespace wContour
             }
 
             //---- Juge isHighCenter for border polygons
-            if (aPolygonList .Count == 0)
+            if (aPolygonList.Count == 0)
             {
                 aLine = new PolyLine();
                 aLine.Type = "Border";
                 aLine.Value = contour[0];                
                 aLine.PointList = new List<PointD>(aBorder.LineList[0].pointList);
 
-                if (aLine.PointList.Count > 0)
+                if (aLine.PointList.Count > 2)
                 {
                     aPolygon = new Polygon();
                     aPolygon.LowValue = aLine.Value;
