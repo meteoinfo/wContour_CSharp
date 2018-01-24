@@ -1,5 +1,0 @@
-D:\MyProgram\CSharp\wContour\bin\x86\Debug\wContour.dll
-D:\MyProgram\CSharp\wContour\bin\x86\Debug\wContour.pdb
-D:\MyProgram\CSharp\wContour\bin\x86\Debug\wContour.xml
-D:\MyProgram\CSharp\wContour\obj\x86\Debug\wContour.dll
-D:\MyProgram\CSharp\wContour\obj\x86\Debug\wContour.pdb

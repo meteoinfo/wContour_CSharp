@@ -6,10 +6,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
 using System.Text;
-using System.Drawing;
-
+#if !NETSTANDARD1_0
+using PointF = System.Drawing.PointF;
+#else
+using PointF = wContour.PointF;
+#endif
 namespace wContour
 {
     /// <summary>
@@ -19,7 +21,7 @@ namespace wContour
     {
         private static List<EndPoint> _endPointList = new List<EndPoint>();
 
-        #region Public Contour Methods
+#region Public Contour Methods
 
         /// <summary>
         /// Tracing contour lines from the grid data with undefine data
@@ -1701,9 +1703,9 @@ namespace wContour
             return outPolygons;
         }
 
-        #endregion
+#endregion
 
-        #region Streamline
+#region Streamline
         /// <summary>
         /// Tracing stream lines
         /// </summary>
@@ -1965,9 +1967,9 @@ namespace wContour
             return true;
         }
        
-        #endregion
+#endregion
 
-        #region Private contour methods
+#region Private contour methods
 
         private static bool TraceBorder(int[,] S1, int i1, int i2, int j1, int j2, ref int i3, ref int j3)
         {
@@ -6413,9 +6415,9 @@ namespace wContour
             }
         }
 
-        #endregion
+#endregion
 
-        #region Clipping
+#region Clipping
         private static List<PolyLine> CutPolyline(PolyLine inPolyline, List<PointD> clipPList)
         {
             List<PolyLine> newPolylines = new List<PolyLine>();
@@ -7687,9 +7689,9 @@ namespace wContour
             }
         }
 
-        #endregion
+#endregion
 
-        #region Smoothing Methods
+#region Smoothing Methods
         private static List<PointD> BSplineScanning(List<PointD> pointList)
         {
             bool isClose = false;
@@ -7824,9 +7826,9 @@ namespace wContour
             fs[3] = f3(t);
         }
 
-        #endregion
+#endregion
 
-        #region Other Methods
+#region Other Methods
         private static Extent GetExtent(List<PointD> pList)
         {
             double  minX, minY, maxX, maxY;
@@ -8010,11 +8012,12 @@ namespace wContour
 
                 tempLeft = (q2.X - q1.X) * (p1.Y - p2.Y) - (p2.X - p1.X) * (q1.Y - q2.Y);
                 tempRight = (p1.Y - q1.Y) * (p2.X - p1.X) * (q2.X - q1.X) + q1.X * (q2.Y - q1.Y) * (p2.X - p1.X) - p1.X * (p2.Y - p1.Y) * (q2.X - q1.X);
-                IPoint.X = (float)(tempRight / tempLeft);
+                float X = (float)(tempRight / tempLeft);
 
                 tempLeft = (p1.X - p2.X) * (q2.Y - q1.Y) - (p2.Y - p1.Y) * (q1.X - q2.X);
                 tempRight = p2.Y * (p1.X - p2.X) * (q2.Y - q1.Y) + (q2.X - p2.X) * (q2.Y - q1.Y) * (p1.Y - p2.Y) - q2.Y * (q1.X - q2.X) * (p2.Y - p1.Y);
-                IPoint.Y = (float)(tempRight / tempLeft);
+                float Y = (float)(tempRight / tempLeft);
+                IPoint = new PointF(X, Y);
             }
 
             return IPoint;
@@ -8288,7 +8291,7 @@ namespace wContour
             PointD p1, p2;
             List<EndPoint> aEPList = new List<EndPoint>();
             List<EndPoint> temEPList = new List<EndPoint>();
-            ArrayList dList = new ArrayList();
+            List<object> dList = new List<object>();
             EndPoint aEP;
             double dist;
             bool IsInsert;
@@ -8514,6 +8517,6 @@ namespace wContour
             return min;
         }
 
-        #endregion
+#endregion
     }
 }
